@@ -50,13 +50,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-finance_project.urls'
+
+ROOT_URLCONF = 'finance_project.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'tracker' / 'templates': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'tracker' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
