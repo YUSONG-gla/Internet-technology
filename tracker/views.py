@@ -1,7 +1,9 @@
+# Django Core Imports
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import UserRegistrationForm, LoginForm
+# [FIXED] Added TransactionForm here to prevent NameError!
+from .forms import UserRegistrationForm, LoginForm, TransactionForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 # Local App Imports (Models & Forms)
