@@ -2,7 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import UserRegistrationForm, LoginForm
-
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+# Local App Imports (Models & Forms)
+from .models import Transaction, Budget
 # Logic to handle user registration securely.
 # Decision: Uses custom UserRegistrationForm to capture email and username, 
 # then manually sets the password using set_password to ensure encryption/hashing.
@@ -45,3 +48,49 @@ def logout_view(request):
     logout(request)
     messages.info(request, 'You have successfully logged out.')
     return redirect('login')
+# [Intent] The Dashboard is the core "View Data" (M4) requirement.
+# Decision: Use @login_required decorator to ensure the page is inaccessible to unauthorized users.
+@login_required
+def dashboard(request):
+    """
+    Logic to aggregate financial data for the currently logged-in user.
+    Decision: Data is filtered by 'request.user' to ensure strict data isolation (Privacy).
+    """
+    user_transactions = Transaction.objects.filter(user=request.user)
+
+    # Calculate totals using DB aggregation for better sustainability/performance
+    total_income = user_transactions.filter(type='Income').aggregate(Sum('amount'))['amount__sum'] or 0
+    total_expenses = user_transactions.filter(type='Expense').aggregate(Sum('amount'))['amount__sum'] or 0
+    balance = total_income - total_expenses
+
+    # Fetch recent history and budget status (Supports S1 requirement)
+    recent_transactions = user_transactions.order_by('-date')[:5]
+    budget = Budget.objects.filter(user=request.user).first()
+
+    context = {
+        'total_income': total_income,
+        'total_expenses': total_expenses,
+        'balance': balance,
+        'recent_transactions': recent_transactions,
+        'budget': budget,
+    }
+    return render(request, 'tracker/dashboard.html', context)
+
+
+# [Intent] Handle the creation of new financial records (M2 requirement).
+# Decision: Function name matches the pointer in urls.py (views.add_transaction).
+@login_required
+def add_transaction(request):
+    if request.method == 'POST':
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            # [Decision] Crucial Security Step: Manually assign the transaction to the 
+            # logged-in user to prevent data injection vulnerabilities.
+            transaction.user = request.user
+            transaction.save()
+            return redirect('dashboard')
+    else:
+        form = TransactionForm()
+    
+    return render(request, 'tracker/add_transaction.html', {'form': form})
