@@ -1,81 +1,47 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.db.models import Sum, Q
-from .models import Transaction, Category, Budget
-from .forms import LoginForm, TransactionForm, RegisterForm
+from django.contrib import messages
+from .forms import UserRegistrationForm, LoginForm
 
+# Logic to handle user registration securely.
+# Decision: Uses custom UserRegistrationForm to capture email and username, 
+# then manually sets the password using set_password to ensure encryption/hashing.
+def register_view(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            # [Decision] Security requirement: Ensure passwords are not stored in plain text.
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            messages.success(request, 'Your account has been created! You can now log in.')
+            return redirect('login')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'tracker/register.html', {'form': form})
 
+# Authenticate user credentials and start a session.
+# Decision: Uses Django's built-in authenticate() to verify credentials against the DB.
 def login_view(request):
-    """用户登录视图"""
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                # Redirect to dashboard upon successful authentication
                 return redirect('dashboard')
+            else:
+                # Provide feedback for security failures without exposing specific details
+                messages.error(request, 'Invalid username or password.')
     else:
         form = LoginForm()
     return render(request, 'tracker/login.html', {'form': form})
 
-
-def register_view(request):
-    """用户注册视图"""
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = RegisterForm()
-    return render(request, 'tracker/register.html', {'form': form})
-
-
+# [Intent] Log out user and clear session data.
 def logout_view(request):
-    """用户登出视图"""
     logout(request)
+    messages.info(request, 'You have successfully logged out.')
     return redirect('login')
-
-
-@login_required(login_url='login')
-def dashboard(request):
-    """用户仪表板"""
-    user = request.user
-    transactions = Transaction.objects.filter(user=user).order_by('-date')[:10]
-    
-    income = Transaction.objects.filter(
-        user=user, transaction_type='income'
-    ).aggregate(Sum('amount'))['amount__sum'] or 0
-    
-    expense = Transaction.objects.filter(
-        user=user, transaction_type='expense'
-    ).aggregate(Sum('amount'))['amount__sum'] or 0
-    
-    balance = income - expense
-    
-    context = {
-        'transactions': transactions,
-        'income': income,
-        'expense': expense,
-        'balance': balance,
-    }
-    return render(request, 'tracker/dashboard.html', context)
-
-
-@login_required(login_url='login')
-def add_transaction(request):
-    """添加交易记录"""
-    if request.method == 'POST':
-        form = TransactionForm(request.POST)
-        if form.is_valid():
-            transaction = form.save(commit=False)
-            transaction.user = request.user
-            transaction.save()
-            return redirect('dashboard')
-    else:
-        form = TransactionForm()
-    return render(request, 'tracker/add_transaction.html', {'form': form})
