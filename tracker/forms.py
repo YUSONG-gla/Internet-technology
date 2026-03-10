@@ -66,3 +66,15 @@ class UserRegistrationForm(forms.ModelForm):
 
 # Alias for backward compatibility
 RegisterForm = UserRegistrationForm
+from .models import Category
+
+class CategoryForm(forms.ModelForm):
+    """""
+    [Intent] Form to handle the creation of new transaction categories.
+    """
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g., Groceries, Entertainment'}),
+        }

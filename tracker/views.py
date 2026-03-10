@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 # [FIXED] Added TransactionForm here to prevent NameError!
-from .forms import UserRegistrationForm, LoginForm, TransactionForm
+from .forms import UserRegistrationForm, LoginForm, TransactionForm, BudgetForm, CategoryForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 # Local App Imports (Models & Forms)
@@ -96,3 +96,41 @@ def add_transaction(request):
         form = TransactionForm()
     
     return render(request, 'tracker/add_transaction.html', {'form': form})
+# [Intent] Allow users to set or update their spending budget (Supports S1 requirement).
+# [Decision] Use get_or_create to fetch the user's existing budget, or create a default one 
+# if it doesn't exist. This ensures we don't duplicate budget records for a single user.
+@login_required
+def set_budget(request):
+    # Fetch existing budget or create a new one with a default limit of 0
+    budget, created = Budget.objects.get_or_create(
+        user=request.user, 
+        defaults={'limit_amount': 0, 'period': 'Monthly'}
+    )
+    
+    if request.method == 'POST':
+        # Pass the instance to the form so it updates the existing record instead of creating a new one
+        form = BudgetForm(request.POST, instance=budget)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your budget has been successfully updated!')
+            return redirect('dashboard')
+    else:
+        form = BudgetForm(instance=budget)
+    
+    return render(request, 'tracker/set_budget.html', {'form': form})
+
+
+# [Intent] Allow users to add new categories for organizing transactions (Supports M3 requirement).
+@login_required
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'New category added successfully!')
+            # Redirect back to the add transaction page so they can use the new category immediately
+            return redirect('add_transaction')
+    else:
+        form = CategoryForm()
+        
+    return render(request, 'tracker/add_category.html', {'form': form})

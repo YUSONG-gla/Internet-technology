@@ -11,4 +11,6 @@ urlpatterns = [
     # Note: dashboard route will be fully implemented in the next step
     path('dashboard/', views.dashboard, name='dashboard'),
     path('transaction/add/', views.add_transaction, name='add_transaction'),
+    path('budget/set/', views.set_budget, name='set_budget'),
+    path('category/add/', views.add_category, name='add_category'),
 ]
