@@ -1,0 +1,28 @@
+{% extends "tracker/base.html" %} {% block content %}
+
+<div class="form-page">
+  <div class="form-card">
+    <h1 class="form-title">Login</h1>
+
+    <form method="post" class="styled-form">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div class="form-row">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Login</button>
+        <a href="{% url 'register' %}" class="back-link">Register</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

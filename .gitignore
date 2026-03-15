@@ -4,6 +4,7 @@ __pycache__/
 db.sqlite3
 venv/
 .env
+IT/
 
 # Mac / Windows
 .DS_Store

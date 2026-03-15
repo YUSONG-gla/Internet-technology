@@ -1,0 +1,24 @@
+{% extends "tracker/base.html" %} {% block content %}
+
+<div class="form-page">
+  <div class="form-card">
+    <h1 class="form-title">Add Category</h1>
+
+    <form method="post" class="styled-form">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <label for="{{ form.name.id_for_label }}">Category Name</label>
+        {{ form.name }}
+        <p class="form-help">Example: Groceries, Entertainment, Transport.</p>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Save</button>
+        <a href="{% url 'dashboard' %}" class="back-link">Back to Dashboard</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
