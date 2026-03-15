@@ -2,15 +2,15 @@ from django.urls import path
 from django.views.generic import RedirectView
 from . import views
 
+
 urlpatterns = [
-    # Named URLs allow for reverse resolution in views and templates
-    path('', RedirectView.as_view(url='/login/', permanent=False), name='home'),
+    path('', views.dashboard, name='dashboard'),
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
-    # Note: dashboard route will be fully implemented in the next step
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('transaction/add/', views.add_transaction, name='add_transaction'),
-    path('budget/set/', views.set_budget, name='set_budget'),
+    path('add/', views.add_transaction, name='add_transaction'),
     path('category/add/', views.add_category, name='add_category'),
+    path('transaction/delete/<int:transaction_id>/', views.delete_transaction, name='delete_transaction'),
+    path('transaction/edit/<int:transaction_id>/', views.edit_transaction, name='edit_transaction'),
+    path('set-budget/', views.set_budget, name='set_budget'),
 ]
