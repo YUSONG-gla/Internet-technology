@@ -2,7 +2,7 @@
 
 <div class="form-page">
   <div class="form-card">
-    <h1 class="form-title">Add Transaction</h1>
+    <h1 class="form-title">Edit Transaction</h1>
 
     <form method="post" class="styled-form">
       {% csrf_token %}
@@ -34,8 +34,8 @@
       </div>
 
       <div class="form-actions">
-        <button type="submit">Save</button>
-        <a href="{% url 'dashboard' %}" class="back-link">Back to Dashboard</a>
+        <button type="submit">Update Transaction</button>
+        <a href="{% url 'dashboard' %}" class="back-link">Cancel</a>
       </div>
     </form>
   </div>

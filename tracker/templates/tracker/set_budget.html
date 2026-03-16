@@ -1,0 +1,26 @@
+{% extends "tracker/base.html" %} {% block content %}
+
+<div class="form-page">
+  <div class="form-card">
+    <h1 class="form-title">Set Monthly Budget</h1>
+
+    <form method="post" class="styled-form">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <label for="{{ form.limit_amount.id_for_label }}">Limit Amount</label>
+        {{ form.limit_amount }}
+        <p class="form-help">
+          This budget will be applied to the current calendar month.
+        </p>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Save Budget</button>
+        <a href="{% url 'dashboard' %}" class="back-link">Back to Dashboard</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
