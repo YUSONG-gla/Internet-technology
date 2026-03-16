@@ -11,6 +11,10 @@ body {
     padding: 0 24px;
 }
 
+img {
+    max-width: 100%;
+    height: auto; 
+}
 .navbar {
     background: #1f1f1f;
     color: white;

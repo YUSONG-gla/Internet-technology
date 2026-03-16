@@ -1,9 +1,10 @@
-{% extends "tracker/base.html" %} {% block content %}
+ {% extends "tracker/base.html" %}
+{% load static %}
 
-<div class="form-page">
+{% block content %}<div class="form-page">
   <div class="form-card">
     <h1 class="form-title">Login</h1>
-
+    <img src="{% static 'tracker/images.jpg' %}" alt="images" width="400" height="300" style="display: block; margin: 0 auto;">
     <form method="post" class="styled-form">
       {% csrf_token %}
 
