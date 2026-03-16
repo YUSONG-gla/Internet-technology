@@ -6,17 +6,17 @@
 
 <div class="summary-grid">
     <div class="summary-card">
-        <h3>Total Income</h3>
+        <h2>Total Income</h2>
         <p class="income-text">{{ total_income|floatformat:2 }}</p>
     </div>
 
     <div class="summary-card">
-        <h3>Total Expense</h3>
+        <h2>Total Expense</h2>
         <p class="expense-text">{{ total_expense|floatformat:2 }}</p>
     </div>
 
     <div class="summary-card">
-        <h3>Remaining Balance</h3>
+        <h2>Remaining Balance</h2>
         <p id="balance-value" class="balance-text" data-value="{{ balance }}">
             {{ balance|floatformat:2 }}
         </p>
