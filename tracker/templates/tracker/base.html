@@ -7,44 +7,21 @@
   </head>
 
   <body>
-    <nav class="navbar">
-      <div class="nav-left">
-        <h2 class="logo">Finance Tracker</h2>
-
-        {% if user.is_authenticated %}
-        <a
-          href="{% url 'dashboard' %}"
-          class="{% if request.path == '/' %}active{% endif %}"
-          >Dashboard</a
-        >
-        <a
-          href="{% url 'add_transaction' %}"
-          class="{% if request.path == '/add/' %}active{% endif %}"
-          >Add Transaction</a
-        >
-        <a
-          href="{% url 'add_category' %}"
-          class="{% if request.path == '/category/add/' %}active{% endif %}"
-          >Add Category</a
-        >
-        <a
-          href="{% url 'set_budget' %}"
-          class="{% if request.path == '/set-budget/' %}active{% endif %}"
-          >Set Budget</a
-        >
-        {% endif %}
-      </div>
+    <nav>
+      <h2>Finance Tracker</h2>
 
       {% if user.is_authenticated %}
-      <div class="nav-right">
-        <span class="welcome-text">Welcome, {{ user.username }}</span>
-        <a href="{% url 'logout' %}">Logout</a>
-      </div>
+      <a href="{% url 'dashboard' %}">Dashboard</a>
+      <a href="{% url 'add_transaction' %}">Add Transaction</a>
+      <a href="{% url 'add_category' %}">Add Category</a>
+      <a href="{% url 'set_budget' %}">Set Budget</a>
+
+      <span style="margin-left: 20px"> Welcome, {{ user.username }} </span>
+
+      <a href="{% url 'logout' %}">Logout</a>
       {% endif %}
     </nav>
 
-    <div class="container">{% block content %}{% endblock %}</div>
-
-    <script src="{% static 'tracker/js/script.js' %}"></script>
+    <div class="container">{% block content %} {% endblock %}</div>
   </body>
 </html>
