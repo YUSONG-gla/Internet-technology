@@ -1,5 +1,5 @@
 # FinanceTracker
-((https://internet-technology.onrender.com)
+(https://internet-technology.onrender.com)
 A web-based personal finance management system built with Django.
 
 This application allows users to track income and expenses, manage monthly budgets, and gain insights into their financial activities through an intuitive dashboard.
