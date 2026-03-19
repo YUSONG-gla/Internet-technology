@@ -34,7 +34,7 @@ class TrackerModelTests(TestCase):
         )
         Transaction.objects.create(
             user=self.user, category=self.category, amount=Decimal('20.00'),
-            type='Expense', date=datetime.date(2026, 3, 15)  # 这个日期更晚
+            type='Expense', date=datetime.date(2026, 3, 15)  
         )
         
         transactions = Transaction.objects.all()
